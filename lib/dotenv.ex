@@ -109,6 +109,6 @@ end
 
 defimpl Access, for: Dotenv.Env do
   def access(env, key) do
-    env.values[key] || System.get_env(key)
+    env.get(key,System.get_env(key))
   end
 end
