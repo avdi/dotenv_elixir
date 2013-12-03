@@ -24,6 +24,6 @@ defmodule Dotenv.Server do
 
   def handle_call({:get, key, fallback}, _from, env) do
     # why doesn't this work using env.get(key, fallback)
-    {:reply, Dotenv.Env.get(env, key, fallback), env}
+    {:reply, env.get(key, fallback), env}
   end
 end

@@ -14,7 +14,15 @@ defmodule Dotenv do
       Enum.join(env.paths, ":")
     end
 
-    def get(env, key, fallback // nil) do
+    def get(key, env) do
+      Dict.get(env.values, key, nil)
+    end
+
+    def get(key, fallback, env) when is_function(fallback) do
+      Dict.get(env.values, key, fallback.(key))
+    end
+
+    def get(key, fallback, env) do
       Dict.get(env.values, key, fallback)
     end
   end
