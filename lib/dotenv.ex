@@ -1,4 +1,5 @@
 defmodule Dotenv do
+  import Enum
   use Application.Behaviour
 
   # See http://elixir-lang.org/docs/stable/Application.Behaviour.html
@@ -11,7 +12,7 @@ defmodule Dotenv do
 
   defrecord Env, paths: [], values: [] do
     def path(env) do
-      Enum.join(env.paths, ":")
+      join(env.paths, ":")
     end
 
     def get(key, env) do
@@ -57,6 +58,8 @@ defmodule Dotenv do
     env
   end
 
+  def load(env_path // :automatic)
+
   def load([env_path|env_paths]) do
     first_env = load(env_path)
     rest_env  = load(env_paths)
@@ -68,7 +71,7 @@ defmodule Dotenv do
     Env[paths: [], values: []]
   end
 
-  def load(env_path // :automatic) do
+  def load(env_path) do
     import Enum
     {env_path, contents} = read_env_file(env_path)
     matches = Regex.scan(@pattern, contents)

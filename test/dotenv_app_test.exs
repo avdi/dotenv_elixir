@@ -27,7 +27,7 @@ defmodule DotenvAppTest do
   test "getting a value with a fallback" do
     assert Dotenv.get("APP_TEST_VAR", :fallback) == "HELLO"
     assert Dotenv.get("MISSING", :fallback) == :fallback
-    assert Dotenv.get("MISSING", fn(key) -> :generated_fallback end) ==
+    assert Dotenv.get("MISSING", fn(_) -> :generated_fallback end) ==
                     :generated_fallback
   end
 end
