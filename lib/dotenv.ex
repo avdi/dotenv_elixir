@@ -4,7 +4,7 @@ defmodule Dotenv do
 
   # See http://elixir-lang.org/docs/stable/Application.Behaviour.html
   # for more information on OTP Applications
-  def start(_type, env_path // :automatic) do
+  def start(_type, env_path \\ :automatic) do
     Dotenv.Supervisor.start_link(env_path)
   end
 
@@ -44,7 +44,7 @@ defmodule Dotenv do
     :gen_server.call :dotenv, :env
   end
 
-  def get(key, fallback // nil) do
+  def get(key, fallback \\ nil) do
     :gen_server.call :dotenv, {:get, key, fallback}
   end
 
@@ -52,13 +52,13 @@ defmodule Dotenv do
   # Serverless API
   ##############################################################################
 
-  def load!(env_path // :automatic) do
+  def load!(env_path \\ :automatic) do
     env = load(env_path)
     System.put_env(env.values)
     env
   end
 
-  def load(env_path // :automatic)
+  def load(env_path \\ :automatic)
 
   def load([env_path|env_paths]) do
     first_env = load(env_path)

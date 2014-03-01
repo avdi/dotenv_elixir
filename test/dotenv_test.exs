@@ -1,7 +1,7 @@
 defmodule DotenvTest do
   use ExUnit.Case, async: true
 
-  def fixture_dir, do: Path.expand("../fixture", __FILE__)
+  def fixture_dir, do: Path.expand("../fixture", __ENV__.file())
   def proj1_dir, do: Path.join(fixture_dir, "proj1")
   def proj2_dir, do: Path.join(fixture_dir, "proj2")
 

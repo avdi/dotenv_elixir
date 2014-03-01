@@ -1,7 +1,7 @@
 defmodule DotenvAppTest do
   use ExUnit.Case
 
-  def fixture_dir, do: Path.expand("../fixture", __FILE__)
+  def fixture_dir, do: Path.expand("../fixture", __ENV__.file())
   def proj1_dir, do: Path.join(fixture_dir, "proj1")
 
   setup do
