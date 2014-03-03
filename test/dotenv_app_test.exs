@@ -1,16 +1,15 @@
 defmodule DotenvAppTest do
   use ExUnit.Case
 
-  def fixture_dir, do: Path.expand("../fixture", __FILE__)
+  def fixture_dir, do: Path.expand("../fixture", __ENV__.file())
   def proj1_dir, do: Path.join(fixture_dir, "proj1")
 
   setup do
-    Dotenv.reload!
+    Dotenv.reload!()
   end
 
-  test "fetching a var" do
-    assert Dotenv.get("APP_TEST_VAR") == "HELLO"
-    assert System.get_env("APP_TEST_VAR") == "HELLO"
+  teardown do
+    System.put_env { "APP_TEST_VAR": nil, "FOO_BAR": nil, "MISSING": nil }
   end
 
   test "reloading from a new file" do
@@ -29,5 +28,10 @@ defmodule DotenvAppTest do
     assert Dotenv.get("MISSING", :fallback) == :fallback
     assert Dotenv.get("MISSING", fn(_) -> :generated_fallback end) ==
                     :generated_fallback
+  end
+
+  test "fetching a var" do
+    assert Dotenv.get("APP_TEST_VAR") == "HELLO"
+    assert System.get_env("APP_TEST_VAR") == "HELLO"
   end
 end

@@ -1,7 +1,7 @@
 defmodule Dotenv.Supervisor do
   use Supervisor.Behaviour
 
-  def start_link(env_path // :automatic) do
+  def start_link(env_path \\ :automatic) do
     :supervisor.start_link(__MODULE__, env_path)
   end
 
