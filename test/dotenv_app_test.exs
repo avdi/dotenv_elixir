@@ -6,10 +6,11 @@ defmodule DotenvAppTest do
 
   setup do
     Dotenv.reload!()
-  end
-
-  teardown do
-    System.put_env { "APP_TEST_VAR": nil, "FOO_BAR": nil, "MISSING": nil }
+    on_exit fn ->
+      System.put_env "APP_TEST_VAR", ""
+      System.put_env "FOO_BAR", ""
+      System.put_env "MISSING", ""
+    end
   end
 
   test "reloading from a new file" do
@@ -26,8 +27,7 @@ defmodule DotenvAppTest do
   test "getting a value with a fallback" do
     assert Dotenv.get("APP_TEST_VAR", :fallback) == "HELLO"
     assert Dotenv.get("MISSING", :fallback) == :fallback
-    assert Dotenv.get("MISSING", fn(_) -> :generated_fallback end) ==
-                    :generated_fallback
+    assert Dotenv.get("MISSING", fn(_) -> :generated_fallback end) == :generated_fallback
   end
 
   test "fetching a var" do
