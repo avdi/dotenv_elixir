@@ -3,9 +3,10 @@ defmodule DotenvAppTest do
 
   def fixture_dir, do: Path.expand("../fixture", __ENV__.file())
   def proj1_dir, do: Path.join(fixture_dir, "proj1")
+  def root_dir, do: Path.expand("../..", __ENV__.file())
 
   setup do
-    Dotenv.reload!()
+    Dotenv.reload!(Path.join(root_dir, ".env"))
     on_exit fn ->
       System.put_env "APP_TEST_VAR", ""
       System.put_env "FOO_BAR", ""
