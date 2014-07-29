@@ -1,5 +1,5 @@
 defmodule Dotenv.Server do
-  use GenServer.Behaviour
+  use GenServer
 
   def start_link(env_path) do
     :gen_server.start_link({:local, :dotenv}, __MODULE__, env_path, [])
@@ -23,6 +23,6 @@ defmodule Dotenv.Server do
   end
 
   def handle_call({:get, key, fallback}, _from, env) do
-    {:reply, env.get(key, fallback), env}
+    {:reply, Dotenv.Env.get(env, fallback, key), env}
   end
 end

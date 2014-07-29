@@ -4,8 +4,15 @@ defmodule DotenvElixir.Mixfile do
   def project do
     [ app: :dotenv_elixir,
       version: "0.0.1",
-      elixir: "~> 0.12.4",
-      deps: deps ]
+      elixir: "~> 0.14.3",
+      deps: deps,
+      package: [
+        contributors: ["Avdi Grimm", "David Rouchy", "Jared Norman"],
+        links: [github: "https://github.com/avdi/dotenv_elixir"]
+      ],
+      description: """
+      A port of dotenv to Elixir
+      """ ]
   end
 
   # Configuration for the OTP application

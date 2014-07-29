@@ -8,7 +8,7 @@ defmodule DotenvTest do
   test "parsing a simple dotenv file" do
     File.cd! proj1_dir
     env = Dotenv.load
-    assert env.path == Path.expand(".env", proj1_dir)
+    assert Dotenv.Env.path(env) == Path.expand(".env", proj1_dir)
     assert env["FOO_BAR"] == "1234"
     assert env["BAZ"] == "5678"
     assert env["BUZ"] == "9999"
@@ -17,7 +17,7 @@ defmodule DotenvTest do
   test "finding the dotenv from a subdir" do
     File.cd!(Path.join(proj1_dir, "subdir"))
     env = Dotenv.load
-    assert env.path == Path.expand(".env", proj1_dir)
+    assert Dotenv.Env.path(env) == Path.expand(".env", proj1_dir)
     assert env["FOO_BAR"] == "1234"
     assert env["BAZ"] == "5678"
     assert env["BUZ"] == "9999"
@@ -37,7 +37,7 @@ defmodule DotenvTest do
     System.put_env "FOO_BAR", "ORIGINAL_FOO_BAR"
     System.put_env "BAZZLE", "4321"
     env = Dotenv.load
-    assert env.path == Path.expand(".env", proj1_dir)
+    assert Dotenv.Env.path(env) == Path.expand(".env", proj1_dir)
     # .env values take precedence
     assert env["FOO_BAR"] == "1234"
     assert env["BAZZLE"]  == "4321"
@@ -46,14 +46,14 @@ defmodule DotenvTest do
   test "with explicit file" do
     env_path = Path.join(proj2_dir, ".env")
     env = Dotenv.load!(env_path)
-    assert env.path == env_path
+    assert Dotenv.Env.path(env) == env_path
     assert System.get_env("PROJ2_VAR") == "9876"
   end
 
   test "with multiple explicit files" do
     env_paths = [Path.join(proj1_dir, ".env"), Path.join(proj2_dir, ".env")]
     env = Dotenv.load!(env_paths)
-    assert env.path == env_paths |> Enum.join(":")
+    assert Dotenv.Env.path(env) == env_paths |> Enum.join(":")
     assert System.get_env("PROJ2_VAR") == "9876"
     assert System.get_env("FOO_BAR") == "PROJ2_FOO_BAR"
   end
