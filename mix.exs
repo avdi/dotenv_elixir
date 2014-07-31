@@ -3,7 +3,7 @@ defmodule DotenvElixir.Mixfile do
 
   def project do
     [ app: :dotenv_elixir,
-      version: "0.0.1",
+      version: "0.0.2",
       elixir: "~> 0.14.3",
       deps: deps,
       package: [
