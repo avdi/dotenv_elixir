@@ -2,7 +2,7 @@ defmodule DotenvElixir.Mixfile do
   use Mix.Project
 
   def project do
-    [ app: :dotenv_elixir,
+    [ app: :dotenv,
       version: "0.0.2",
       elixir: "~> 0.14.3",
       deps: deps,
