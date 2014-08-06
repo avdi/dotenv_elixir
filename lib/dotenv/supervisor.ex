@@ -1,4 +1,5 @@
 defmodule Dotenv.Supervisor do
+  @moduledoc false
   use Supervisor
 
   def start_link(env_path \\ :automatic) do
