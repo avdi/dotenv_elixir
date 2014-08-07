@@ -105,10 +105,8 @@ defmodule Dotenv do
 
   def load(env_path) do
     {env_path, contents} = read_env_file(env_path)
-    matches = Regex.scan(@pattern, contents)
-    values  = Enum.reduce(matches, HashDict.new, fn([_whole, key, value], env) ->
-                                                   HashDict.merge(env, HashDict.new |> HashDict.put(key, value))
-                                                 end)
+    values = Regex.scan(@pattern, contents)
+    |> Enum.reduce(HashDict.new, fn([_whole, k, v], env) -> HashDict.put(env, k, v) end)
     %Env{paths: [env_path], values: values}
   end
 
