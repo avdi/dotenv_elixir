@@ -8,7 +8,8 @@ defmodule DotenvElixir.Mixfile do
       deps: deps,
       package: [
         contributors: ["Avdi Grimm", "David Rouchy", "Jared Norman"],
-        links: [github: "https://github.com/avdi/dotenv_elixir"]
+        links: [github: "https://github.com/avdi/dotenv_elixir"],
+        licenses: ["MIT"]
       ],
       description: """
       A port of dotenv to Elixir
