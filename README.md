@@ -6,7 +6,15 @@ This is a port of @bkeepers' [dotenv](https://github.com/bkeepers/dotenv) projec
 
 The simplest way to use Dotenv is with the included OTP application. This will automatically load variables from a `.env` file in the root of your project directory into the process environment when started.
 
-First add `dotenv_elixir` to your dependencies:
+First add `dotenv_elixir` to your dependencies.
+
+For the latest release:
+
+```elixir
+{:dotenv, "~> 0.0.2"}
+```
+
+For master:
 
 ```elixir
 {:dotenv, github: "avdi/dotenv_elixir"}
