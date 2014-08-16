@@ -11,7 +11,7 @@ First add `dotenv_elixir` to your dependencies.
 For the latest release:
 
 ```elixir
-{:dotenv, "~> 0.0.2"}
+{:dotenv, "~> 0.0.3"}
 ```
 
 For master:
