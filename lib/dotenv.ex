@@ -26,7 +26,21 @@ defmodule Dotenv do
     Dotenv.Supervisor.start_link(env_path)
   end
 
-  @pattern ~r/^\s*(\w+)\s*[:=]\s*(\S+)\s*$/m
+  @pattern ~r/
+    ^
+    (?:export\s+)?    # optional export
+    ([\w\.]+)         # key
+    (?:\s*=\s*|:\s+?) # separator
+    (                 # optional value begin
+      '(?:\'|[^'])*'  #   single quoted value
+      |               #   or
+      "(?:\"|[^"])*"  #   double quoted value
+      |               #   or
+      [^#\n]+         #   unquoted value
+    )?                # value end
+    (?:\s*\#.*)?      # optional comment
+    $
+    /xm
 
   ##############################################################################
   # Server API
