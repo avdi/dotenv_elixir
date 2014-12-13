@@ -12,15 +12,17 @@ defmodule DotenvTest do
     assert env["FOO_BAR"] == "1234"
     assert env["BAZ"] == "5678"
     assert env["BUZ"] == "9999"
+    assert env["QUX"] == "0000"
   end
 
   test "finding the dotenv from a subdir" do
-    File.cd!(Path.join(proj1_dir, "subdir"))
+    File.cd! Path.join(proj1_dir, "subdir")
     env = Dotenv.load
     assert Dotenv.Env.path(env) == Path.expand(".env", proj1_dir)
     assert env["FOO_BAR"] == "1234"
     assert env["BAZ"] == "5678"
     assert env["BUZ"] == "9999"
+    assert env["QUX"] == "0000"
   end
 
   test "loading into system environment" do
@@ -30,6 +32,7 @@ defmodule DotenvTest do
     assert get_env("FOO_BAR") == "1234"
     assert get_env("BAZ")     == "5678"
     assert get_env("BUZ")     == "9999"
+    assert get_env("QUX")     == "0000"
   end
 
   test "falling back to system environment" do

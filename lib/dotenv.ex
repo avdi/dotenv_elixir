@@ -36,7 +36,7 @@ defmodule Dotenv do
       |               #   or
       "(?:\"|[^"])*"  #   double quoted value
       |               #   or
-      [^#\n]+         #   unquoted value
+      [^#\n]+?        #   unquoted value
     )?                # value end
     (?:\s*\#.*)?      # optional comment
     $
