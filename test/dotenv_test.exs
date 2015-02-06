@@ -15,6 +15,24 @@ defmodule DotenvTest do
     assert env["QUX"] == "0000"
   end
 
+  test "it parses values in double quotes" do
+    File.cd! proj1_dir
+    env = Dotenv.load
+    assert env["DOUBLE_QUOTED_VALUE"] == "NoDoubleQuotes"
+  end
+
+  test "it parses values that contain #" do
+    File.cd! proj1_dir
+    env = Dotenv.load
+    assert env["WITH_HASH"] == "foo#bar"
+  end
+
+  test "it parses values in single quotes" do
+    File.cd! proj1_dir
+    env = Dotenv.load
+    assert env["SINGLE_QUOTED_VALUE"] == "NoSingleQuotes"
+  end
+
   test "finding the dotenv from a subdir" do
     File.cd! Path.join(proj1_dir, "subdir")
     env = Dotenv.load
