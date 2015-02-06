@@ -26,6 +26,7 @@ defmodule Dotenv do
     Dotenv.Supervisor.start_link(env_path)
   end
 
+  @quotes_pattern ~r/^(['"])(.*)\1$/
   @pattern ~r/
     ^
     (?:export\s+)?    # optional export
@@ -120,8 +121,19 @@ defmodule Dotenv do
   def load(env_path) do
     {env_path, contents} = read_env_file(env_path)
     values = Regex.scan(@pattern, contents)
+    |> trim_quotes_from_values
     |> Enum.reduce(HashDict.new, fn([_whole, k, v], env) -> HashDict.put(env, k, v) end)
     %Env{paths: [env_path], values: values}
+  end
+
+  defp trim_quotes_from_values(values) do
+    values |> Enum.map(fn(values)->
+      Enum.map(values, &trim_quotes/1)
+    end)
+  end
+
+  defp trim_quotes(value) do
+    String.replace(value, @quotes_pattern, "\\2")
   end
 
   defp read_env_file(:automatic) do
