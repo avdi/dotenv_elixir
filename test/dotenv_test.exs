@@ -21,12 +21,6 @@ defmodule DotenvTest do
     assert env["DOUBLE_QUOTED_VALUE"] == "NoDoubleQuotes"
   end
 
-  test "it parses values that contain #" do
-    File.cd! proj1_dir
-    env = Dotenv.load
-    assert env["WITH_HASH"] == "foo#bar"
-  end
-
   test "it parses values in single quotes" do
     File.cd! proj1_dir
     env = Dotenv.load
