@@ -9,32 +9,32 @@ defmodule DotenvTest do
     File.cd! proj1_dir
     env = Dotenv.load
     assert Dotenv.Env.path(env) == Path.expand(".env", proj1_dir)
-    assert env["FOO_BAR"] == "1234"
-    assert env["BAZ"] == "5678"
-    assert env["BUZ"] == "9999"
-    assert env["QUX"] == "0000"
+    assert Dotenv.Env.get(env, "FOO_BAR") == "1234"
+    assert Dotenv.Env.get(env, "BAZ") == "5678"
+    assert Dotenv.Env.get(env, "BUZ") == "9999"
+    assert Dotenv.Env.get(env, "QUX") == "0000"
   end
 
   test "it parses values in double quotes" do
     File.cd! proj1_dir
     env = Dotenv.load
-    assert env["DOUBLE_QUOTED_VALUE"] == "NoDoubleQuotes"
+    assert Dotenv.Env.get(env, "DOUBLE_QUOTED_VALUE") == "NoDoubleQuotes"
   end
 
   test "it parses values in single quotes" do
     File.cd! proj1_dir
     env = Dotenv.load
-    assert env["SINGLE_QUOTED_VALUE"] == "NoSingleQuotes"
+    assert Dotenv.Env.get(env, "SINGLE_QUOTED_VALUE") == "NoSingleQuotes"
   end
 
   test "finding the dotenv from a subdir" do
     File.cd! Path.join(proj1_dir, "subdir")
     env = Dotenv.load
     assert Dotenv.Env.path(env) == Path.expand(".env", proj1_dir)
-    assert env["FOO_BAR"] == "1234"
-    assert env["BAZ"] == "5678"
-    assert env["BUZ"] == "9999"
-    assert env["QUX"] == "0000"
+    assert Dotenv.Env.get(env, "FOO_BAR") == "1234"
+    assert Dotenv.Env.get(env, "BAZ") == "5678"
+    assert Dotenv.Env.get(env, "BUZ") == "9999"
+    assert Dotenv.Env.get(env, "QUX") == "0000"
   end
 
   test "loading into system environment" do
@@ -54,8 +54,8 @@ defmodule DotenvTest do
     env = Dotenv.load
     assert Dotenv.Env.path(env) == Path.expand(".env", proj1_dir)
     # .env values take precedence
-    assert env["FOO_BAR"] == "1234"
-    assert env["BAZZLE"]  == "4321"
+    assert Dotenv.Env.get(env, "FOO_BAR") == "1234"
+    assert Dotenv.Env.get(env, "BAZZLE") == "4321"
   end
 
   test "with explicit file" do
