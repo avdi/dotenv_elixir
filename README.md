@@ -1,8 +1,24 @@
-# Dotenv for Elixir
+# WARNING: This isn't the Elixir way.
+
+Elixir has an excellent configuration system and this dotenv implementation has
+a serious limitation in that it isn't available at compile time. It fits very
+poorly into a typical deployment setup using exrm or similar. Configuration
+management should be built around Elixir's existing not system, not environment
+variables.
+
+A good example is [Phoenix](http://www.phoenixframework.org/) which generates a
+project where the production config imports the "secrets" from a file stored
+outside of version control. Even if you're using this for development, the same
+approach could be taken.
+
+If you're sure this is the correct solution to a problem in your
+development/deployment workflow, read on!
+
+## Dotenv for Elixir
 
 This is a port of @bkeepers' [dotenv](https://github.com/bkeepers/dotenv) project to Elixir. You can read more about [dotenv](https://github.com/bkeepers/dotenv) on that project's page. The short version is that it simplifies developing projects where configuration is stored in environment variables (e.g. projects intended to be deployed to Heroku).
 
-###Quick Start
+### Quick Start
 
 The simplest way to use Dotenv is with the included OTP application. This will automatically load variables from a `.env` file in the root of your project directory into the process environment when started.
 
@@ -40,13 +56,13 @@ defp app_list, do: [...]
 
 Now, when you load your app in a console with `iex -S mix`, your environment variables will be set automatically.
 
-####Reloading the `.env` file
+#### Reloading the `.env` file
 
 The `Dotenv.reload!/0` function will reload the variables defined in the `.env` file.
 
 More examples of the server API usage can be found in [dotenv_app_test.exs](https://github.com/avdi/dotenv_elixir/blob/master/test/dotenv_app_test.exs).
 
-###Serverless API
+### Serverless API
 
 If you would like finer-grained control over when variables are loaded, or would like to inspect them, Dotenv also provides a serverless API for interacting with `.env` files.
 
