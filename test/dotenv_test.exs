@@ -4,6 +4,7 @@ defmodule DotenvTest do
   def fixture_dir, do: Path.expand("../fixture", __ENV__.file())
   def proj1_dir, do: Path.join(fixture_dir, "proj1")
   def proj2_dir, do: Path.join(fixture_dir, "proj2")
+  def proj3_dir, do: Path.join(fixture_dir, "proj3")
 
   test "parsing a simple dotenv file" do
     File.cd! proj1_dir
@@ -13,6 +14,17 @@ defmodule DotenvTest do
     assert Dotenv.Env.get(env, "BAZ") == "5678"
     assert Dotenv.Env.get(env, "BUZ") == "9999"
     assert Dotenv.Env.get(env, "QUX") == "0000"
+  end
+
+  @tag bug: true
+  test "parsing a simple dotenv file as found in the real world" do
+    File.cd! proj3_dir
+    env = Dotenv.load
+    assert Dotenv.Env.path(env) == Path.expand(".env", proj3_dir)
+    assert Dotenv.Env.get(env, "EXTERNAL_HOST") == "external.example.com"
+    assert Dotenv.Env.get(env, "INTERNAL_PROTOCOL") == "https"
+    assert Dotenv.Env.get(env, "INTERNAL_HOST") == "internal.example.com"
+    assert Dotenv.Env.get(env, "INTERNAL_PROTOCOL") == "https"
   end
 
   test "it parses values in double quotes" do
