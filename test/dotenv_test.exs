@@ -20,9 +20,10 @@ defmodule DotenvTest do
   test "parsing a simple dotenv file as found in the real world" do
     File.cd! proj3_dir
     env = Dotenv.load
+    assert Dotenv.Env.get(env, "EMPTY") == nil
     assert Dotenv.Env.path(env) == Path.expand(".env", proj3_dir)
     assert Dotenv.Env.get(env, "EXTERNAL_HOST") == "external.example.com"
-    assert Dotenv.Env.get(env, "INTERNAL_PROTOCOL") == "https"
+    assert Dotenv.Env.get(env, "EXTERNAL_PROTOCOL") == "https"
     assert Dotenv.Env.get(env, "INTERNAL_HOST") == "internal.example.com"
     assert Dotenv.Env.get(env, "INTERNAL_PROTOCOL") == "https"
   end
