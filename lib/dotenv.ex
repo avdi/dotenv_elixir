@@ -28,20 +28,20 @@ defmodule Dotenv do
 
   @quotes_pattern ~r/^(['"])(.*)\1$/
   @pattern ~r/
-    ^
+    \A
     (?:export\s+)?    # optional export
     ([\w\.]+)         # key
     (?:\s*=\s*|:\s+?) # separator
     (                 # optional value begin
-      '(?:\'|[^'])*'  #   single quoted value
+      '(?:\'|[^'])*?' #   single quoted value
       |               #   or
-      "(?:\"|[^"])*"  #   double quoted value
+      "(?:\"|[^"])*?" #   double quoted value
       |               #   or
       [^#\n]+?        #   unquoted value
     )?                # value end
     (?:\s*\#.*)?      # optional comment
-    $
-    /xm
+    \z
+    /x
 
   ##############################################################################
   # Server API
@@ -120,11 +120,16 @@ defmodule Dotenv do
 
   def load(env_path) do
     {env_path, contents} = read_env_file(env_path)
-    values = Regex.scan(@pattern, contents)
-    |> trim_quotes_from_values
-    |> Enum.reduce(HashDict.new, fn([_whole, k, v], env) -> HashDict.put(env, k, v) end)
-    %Env{paths: [env_path], values: values}
+
+    values = String.split(contents, "\n")
+      |> Enum.flat_map(&Regex.scan(@pattern,&1))
+      |> trim_quotes_from_values
+      |> Enum.reduce(HashDict.new, &collect_into_map/2)
+      %Env{paths: [env_path], values: values}
   end
+
+  defp collect_into_map([_whole, k, v], env), do: HashDict.put(env, k, v)
+  defp collect_into_map([_whole, _k], env),   do: env
 
   defp trim_quotes_from_values(values) do
     values |> Enum.map(fn(values)->
