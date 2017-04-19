@@ -5,7 +5,7 @@ defmodule DotenvElixir.Mixfile do
     [ app: :dotenv,
       version: "2.1.0",
       elixir: "~> 1.0",
-      deps: deps,
+      deps: deps(),
       package: [
         contributors: ["Avdi Grimm", "David Rouchy", "Jared Norman", "Louis Simoneau"],
         links: %{github: "https://github.com/avdi/dotenv_elixir"},
