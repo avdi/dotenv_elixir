@@ -142,7 +142,7 @@ defmodule Dotenv do
   end
 
   defp read_env_file(:automatic) do
-    case find_env_path do
+    case find_env_path() do
       {:ok, env_path} -> {env_path, File.read!(env_path)}
       {:error, _}     -> {:none, ""}
     end
