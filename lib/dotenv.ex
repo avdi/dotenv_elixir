@@ -111,7 +111,7 @@ defmodule Dotenv do
     first_env = load(env_path)
     rest_env  = load(env_paths)
     %Env{paths:  [env_path|rest_env.paths],
-         values: Dict.merge(first_env.values, rest_env.values)}
+         values: Map.merge(first_env.values, rest_env.values)}
   end
 
   def load([]) do
