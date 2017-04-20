@@ -22,7 +22,7 @@ defmodule DotenvAppTest do
 
   test "fetching the whole environment" do
     env = Dotenv.env
-    assert Dict.get(env.values, "APP_TEST_VAR") == "HELLO"
+    assert Map.get(env.values, "APP_TEST_VAR") == "HELLO"
   end
 
   test "getting a value with a fallback" do
