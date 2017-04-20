@@ -111,11 +111,11 @@ defmodule Dotenv do
     first_env = load(env_path)
     rest_env  = load(env_paths)
     %Env{paths:  [env_path|rest_env.paths],
-         values: Dict.merge(first_env.values, rest_env.values)}
+         values: Map.merge(first_env.values, rest_env.values)}
   end
 
   def load([]) do
-    %Env{paths: [], values: HashDict.new}
+    %Env{paths: [], values: %{}}
   end
 
   def load(env_path) do
@@ -124,11 +124,11 @@ defmodule Dotenv do
     values = String.split(contents, "\n")
       |> Enum.flat_map(&Regex.scan(@pattern,&1))
       |> trim_quotes_from_values
-      |> Enum.reduce(HashDict.new, &collect_into_map/2)
+      |> Enum.reduce(%{}, &collect_into_map/2)
       %Env{paths: [env_path], values: values}
   end
 
-  defp collect_into_map([_whole, k, v], env), do: HashDict.put(env, k, v)
+  defp collect_into_map([_whole, k, v], env), do: Map.put(env, k, v)
   defp collect_into_map([_whole, _k], env),   do: env
 
   defp trim_quotes_from_values(values) do
@@ -142,7 +142,7 @@ defmodule Dotenv do
   end
 
   defp read_env_file(:automatic) do
-    case find_env_path do
+    case find_env_path() do
       {:ok, env_path} -> {env_path, File.read!(env_path)}
       {:error, _}     -> {:none, ""}
     end

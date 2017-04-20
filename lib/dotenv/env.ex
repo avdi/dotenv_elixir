@@ -1,6 +1,6 @@
 defmodule Dotenv.Env do
   @type t :: %Dotenv.Env{paths: [String.t], values: %{String.t => String.t}}
-  defstruct paths: [], values: HashDict.new
+  defstruct paths: [], values: Map.new
 
   def path(%Dotenv.Env{paths: paths}) do
     Enum.join(paths, ":")
@@ -11,10 +11,10 @@ defmodule Dotenv.Env do
   end
 
   def get(%Dotenv.Env{values: values}, fallback, key) when is_function(fallback) do
-    HashDict.get(values, key, fallback.(key))
+    Map.get(values, key, fallback.(key))
   end
 
   def get(%Dotenv.Env{values: values}, fallback, key) do
-    HashDict.get(values, key, fallback)
+    Map.get(values, key, fallback)
   end
 end
