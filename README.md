@@ -73,7 +73,7 @@ Alternately, `load/1` will return a data structure of the variables read from th
 ```
 iex(1)> Dotenv.load
 %Dotenv.Env{paths: ["/elixir/dotenv_elixir/.env"],
- values: #HashDict<[{"APP_TEST_VAR", "HELLO"}]>}
+ values: %{"APP_TEST_VAR" => "HELLO"}}
 ```
 
 For further details, see the inline documentation. Usage examples can be found in [dotenv_test.exs](https://github.com/avdi/dotenv_elixir/blob/master/test/dotenv_test.exs).
