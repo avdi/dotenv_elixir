@@ -7,6 +7,7 @@ defmodule DotenvElixir.Mixfile do
       elixir: "~> 1.0",
       deps: deps(),
       package: [
+        maintainers: ["Jared Norman"],
         contributors: ["Avdi Grimm", "David Rouchy", "Jared Norman", "Louis Simoneau"],
         links: %{github: "https://github.com/avdi/dotenv_elixir"},
         licenses: ["MIT"]
