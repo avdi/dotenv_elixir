@@ -46,7 +46,7 @@ defmodule Dotenv do
   # https://regex101.com/r/XrvCwE/1
   @env_expand_pattern ~r/
     (?:^|[^\\])                           # prevent to expand \\$
-    (                                     # get variable key parttern
+    (                                     # get variable key pattern
       \$                                  #
       (?:                                 #
         ([A-Z0-9_]*[A-Z_]+[A-Z0-9_]*)     # get variable key
