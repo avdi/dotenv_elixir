@@ -43,6 +43,21 @@ defmodule Dotenv do
     \z
     /x
 
+  # https://regex101.com/r/XrvCwE/1
+  @env_expand_pattern ~r/
+    (?:^|[^\\])                           # prevent to expand \\$
+    (                                     # get variable key parttern
+      \$                                  #
+      (?:                                 #
+        ([A-Z0-9_]*[A-Z_]+[A-Z0-9_]*)     # get variable key
+        |                                 #
+        (?:                               #
+          {([A-Z0-9_]*[A-Z_]+[A-Z0-9_]*)} # get variable key between {}
+        )                                 #
+      )                                   #
+    )                                     #
+    /x
+
   ##############################################################################
   # Server API
   ##############################################################################
@@ -110,6 +125,7 @@ defmodule Dotenv do
   def load([env_path|env_paths]) do
     first_env = load(env_path)
     rest_env  = load(env_paths)
+
     %Env{paths:  [env_path|rest_env.paths],
          values: Map.merge(first_env.values, rest_env.values)}
   end
@@ -120,12 +136,18 @@ defmodule Dotenv do
 
   def load(env_path) do
     {env_path, contents} = read_env_file(env_path)
+    values = contents |> parse_contents()
+    %Env{paths: [env_path], values: values}
+  end
 
+  def parse_contents(contents) do
     values = String.split(contents, "\n")
-      |> Enum.flat_map(&Regex.scan(@pattern,&1))
+
+    values
+      |> Enum.flat_map(&Regex.scan(@pattern, &1))
       |> trim_quotes_from_values
+      |> Enum.reduce([], &expand_env/2)
       |> Enum.reduce(Map.new, &collect_into_map/2)
-      %Env{paths: [env_path], values: values}
   end
 
   defp collect_into_map([_whole, k, v], env), do: Map.put(env, k, v)
@@ -139,6 +161,46 @@ defmodule Dotenv do
 
   defp trim_quotes(value) do
     String.replace(value, @quotes_pattern, "\\2")
+  end
+
+  # without value
+  defp expand_env([_whole, _k], acc), do: acc
+
+  defp expand_env([whole, k, v], acc) do
+    matchs = Regex.scan(@env_expand_pattern, v)
+
+    new_value =
+      case Enum.empty?(matchs) do
+        true  -> v
+        false ->
+          matchs
+            |> Enum.reduce(v, fn([_whole, pattern | keys], v) ->
+              v |> replace_env(pattern, keys, acc)
+            end)
+      end
+
+    acc ++ [[whole, k, new_value]]
+  end
+
+  defp replace_env(value, pattern, ["" | keys], env), do: replace_env(value, pattern, keys, env)
+  defp replace_env(value, pattern, [key | _], env), do: replace_env(value, pattern, key, env)
+
+  defp replace_env(value, pattern, key, %Env{} = env) do
+    new_value = env |> Env.get(key) || ""
+
+    pattern
+    |> Regex.escape()
+    |> Regex.compile!()
+    |> Regex.replace(value, new_value)
+  end
+
+  defp replace_env(value, pattern, key, acc) when is_list(acc) do
+    values = acc |> Enum.reduce(Map.new, &collect_into_map/2)
+    replace_env(value, pattern, key, %Env{values: values})
+  end
+
+  defp replace_env(value, pattern, key, %{} = values) do
+    replace_env(value, pattern, key, %Env{values: values})
   end
 
   defp read_env_file(:automatic) do

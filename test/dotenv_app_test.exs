@@ -22,7 +22,25 @@ defmodule DotenvAppTest do
 
   test "fetching the whole environment" do
     env = Dotenv.env
+
+    # no need to expand
     assert Map.get(env.values, "APP_TEST_VAR") == "HELLO"
+
+    # expand
+
+    assert Map.get(env.values, "EXPAND_VALUE_1") == "HELLO"
+    assert Map.get(env.values, "EXPAND_VALUE_2") == "TEST_HELLO"
+    assert Map.get(env.values, "EXPAND_VALUE_3") == "TEST_"
+    assert Map.get(env.values, "EXPAND_VALUE_4") == "TEST_HELLO_TEST"
+    assert Map.get(env.values, "EXPAND_VALUE_5") == "TEST_HELLO_TEST"
+    assert Map.get(env.values, "EXPAND_VALUE_6") == "TEST_HELLO_TEST_HELLO"
+    assert Map.get(env.values, "EXPAND_VALUE_7") == "TEST_HELLO_TEST_"
+
+    # no expand
+    assert Map.get(env.values, "SKIP_EXPAND_VALUE_REPLACE_1") == "TEST_\\$APP_TEST_VAR"
+    assert Map.get(env.values, "SKIP_EXPAND_VALUE_REPLACE_2") == "TEST_\\${APP_TEST_VAR}"
+    assert Map.get(env.values, "SKIP_EXPAND_VALUE_REPLACE_3") == "TEST_\\${APP_TEST_VAR}_TEST"
+    assert Map.get(env.values, "SKIP_EXPAND_VALUE_REPLACE_4") == "TEST_\\${APP_TEST_VAR}_TEST"
   end
 
   test "getting a value with a fallback" do
@@ -35,4 +53,13 @@ defmodule DotenvAppTest do
     assert Dotenv.get("APP_TEST_VAR") == "HELLO"
     assert System.get_env("APP_TEST_VAR") == "HELLO"
   end
+
+  test "should fallback expanded" do
+    assert Dotenv.get("EXPAND_VALUE_6") == "TEST_HELLO_TEST_HELLO"
+    assert Dotenv.get("SKIP_EXPAND_VALUE_REPLACE_1") == "TEST_\\$APP_TEST_VAR"
+
+    assert System.get_env("EXPAND_VALUE_6") == "TEST_HELLO_TEST_HELLO"
+    assert System.get_env("SKIP_EXPAND_VALUE_REPLACE_1") == "TEST_\\$APP_TEST_VAR"
+  end
+
 end
