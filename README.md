@@ -3,8 +3,8 @@
 Elixir has an excellent configuration system and this dotenv implementation has
 a serious limitation in that it isn't available at compile time. It fits very
 poorly into a typical deployment setup using exrm or similar. Configuration
-management should be built around Elixir's existing system, not environment
-variables.
+management should be built around Elixir's existing configuration system, and
+the limitations of this package make it inadequate for most users.
 
 A good example is [Phoenix](http://www.phoenixframework.org/) which generates a
 project where the production config imports the "secrets" from a file stored
