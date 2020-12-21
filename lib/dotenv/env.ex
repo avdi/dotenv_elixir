@@ -1,6 +1,6 @@
 defmodule Dotenv.Env do
-  @type t :: %Dotenv.Env{paths: [String.t], values: %{String.t => String.t}}
-  defstruct paths: [], values: Map.new
+  @type t :: %Dotenv.Env{paths: [String.t()], values: %{String.t() => String.t()}}
+  defstruct paths: [], values: Map.new()
 
   def path(%Dotenv.Env{paths: paths}) do
     Enum.join(paths, ":")

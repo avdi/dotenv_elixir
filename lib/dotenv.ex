@@ -70,7 +70,7 @@ defmodule Dotenv do
   """
   @spec reload!() :: :ok
   def reload! do
-    :gen_server.cast :dotenv, :reload!
+    :gen_server.cast(:dotenv, :reload!)
   end
 
   @doc """
@@ -81,24 +81,24 @@ defmodule Dotenv do
   """
   @spec reload!(any) :: :ok
   def reload!(env_path) do
-    :gen_server.cast :dotenv, {:reload!, env_path}
+    :gen_server.cast(:dotenv, {:reload!, env_path})
   end
 
   @doc """
   Returns the current state of the server as a `Dotenv.Env` struct.
   """
-  @spec env() :: Env.t
+  @spec env() :: Env.t()
   def env do
-    :gen_server.call :dotenv, :env
+    :gen_server.call(:dotenv, :env)
   end
 
   @doc """
   Retrieves the value of the given `key` from the server, or `fallback` if the
   value is not found.
   """
-  @spec get(String.t, String.t | nil) :: String.t
+  @spec get(String.t(), String.t() | nil) :: String.t()
   def get(key, fallback \\ nil) do
-    :gen_server.call :dotenv, {:get, key, fallback}
+    :gen_server.call(:dotenv, {:get, key, fallback})
   end
 
   ##############################################################################
@@ -118,19 +118,18 @@ defmodule Dotenv do
   @doc """
   Reads the env files at the provided `env_path` path(s) and returns the values in a `Dotenv.Env` struct.
   """
-  @spec load(String.t | :automatic | [String.t]) :: Env.t
+  @spec load(String.t() | :automatic | [String.t()]) :: Env.t()
   def load(env_path \\ :automatic)
 
-  def load([env_path|env_paths]) do
+  def load([env_path | env_paths]) do
     first_env = load(env_path)
-    rest_env  = load(env_paths)
+    rest_env = load(env_paths)
 
-    %Env{paths:  [env_path|rest_env.paths],
-         values: Map.merge(first_env.values, rest_env.values)}
+    %Env{paths: [env_path | rest_env.paths], values: Map.merge(first_env.values, rest_env.values)}
   end
 
   def load([]) do
-    %Env{paths: [], values: Map.new}
+    %Env{paths: [], values: Map.new()}
   end
 
   def load(env_path) do
@@ -143,17 +142,18 @@ defmodule Dotenv do
     values = String.split(contents, "\n")
 
     values
-      |> Enum.flat_map(&Regex.scan(@pattern, &1))
-      |> trim_quotes_from_values
-      |> Enum.reduce([], &expand_env/2)
-      |> Enum.reduce(Map.new, &collect_into_map/2)
+    |> Enum.flat_map(&Regex.scan(@pattern, &1))
+    |> trim_quotes_from_values
+    |> Enum.reduce([], &expand_env/2)
+    |> Enum.reduce(Map.new(), &collect_into_map/2)
   end
 
   defp collect_into_map([_whole, k, v], env), do: Map.put(env, k, v)
-  defp collect_into_map([_whole, _k], env),   do: env
+  defp collect_into_map([_whole, _k], env), do: env
 
   defp trim_quotes_from_values(values) do
-    values |> Enum.map(fn(values)->
+    values
+    |> Enum.map(fn values ->
       Enum.map(values, &trim_quotes/1)
     end)
   end
@@ -170,12 +170,14 @@ defmodule Dotenv do
 
     new_value =
       case Enum.empty?(matchs) do
-        true  -> v
+        true ->
+          v
+
         false ->
           matchs
-            |> Enum.reduce(v, fn([_whole, pattern | keys], v) ->
-              v |> replace_env(pattern, keys, acc)
-            end)
+          |> Enum.reduce(v, fn [_whole, pattern | keys], v ->
+            v |> replace_env(pattern, keys, acc)
+          end)
       end
 
     acc ++ [[whole, k, new_value]]
@@ -194,7 +196,7 @@ defmodule Dotenv do
   end
 
   defp replace_env(value, pattern, key, acc) when is_list(acc) do
-    values = acc |> Enum.reduce(Map.new, &collect_into_map/2)
+    values = acc |> Enum.reduce(Map.new(), &collect_into_map/2)
     replace_env(value, pattern, key, %Env{values: values})
   end
 
@@ -205,7 +207,7 @@ defmodule Dotenv do
   defp read_env_file(:automatic) do
     case find_env_path() do
       {:ok, env_path} -> {env_path, File.read!(env_path)}
-      {:error, _}     -> {:none, ""}
+      {:error, _} -> {:none, ""}
     end
   end
 
@@ -218,15 +220,16 @@ defmodule Dotenv do
   end
 
   defp find_env_path do
-    find_env_path(File.cwd!)
+    find_env_path(File.cwd!())
   end
 
   defp find_env_path(dir) do
     candidate = Path.join(dir, ".env")
+
     cond do
       File.exists?(candidate) -> {:ok, candidate}
-      dir == "/"              -> {:error, "No .env found"}
-      true                    -> find_env_path(Path.dirname(dir))
+      dir == "/" -> {:error, "No .env found"}
+      true -> find_env_path(Path.dirname(dir))
     end
   end
 end

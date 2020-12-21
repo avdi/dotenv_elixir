@@ -2,13 +2,20 @@ defmodule DotenvElixir.Mixfile do
   use Mix.Project
 
   def project do
-    [ app: :dotenv,
+    [
+      app: :dotenv,
       version: "3.0.0",
       elixir: "~> 1.0",
       deps: deps(),
       package: [
         maintainers: ["Jared Norman"],
-        contributors: ["Avdi Grimm", "David Rouchy", "Jared Norman", "Louis Simoneau", "Michael Bianco"],
+        contributors: [
+          "Avdi Grimm",
+          "David Rouchy",
+          "Jared Norman",
+          "Louis Simoneau",
+          "Michael Bianco"
+        ],
         links: %{github: "https://github.com/avdi/dotenv_elixir"},
         licenses: ["MIT"]
       ],
@@ -18,7 +25,7 @@ defmodule DotenvElixir.Mixfile do
 
   # Configuration for the OTP application
   def application do
-    [mod: { Dotenv, [:automatic] }]
+    [mod: {Dotenv, [:automatic]}]
   end
 
   # Returns the list of dependencies in the format:

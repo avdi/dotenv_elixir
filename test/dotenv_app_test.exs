@@ -7,11 +7,12 @@ defmodule DotenvAppTest do
 
   setup do
     Dotenv.reload!(Path.join(root_dir(), ".env"))
-    on_exit fn ->
-      System.put_env "APP_TEST_VAR", ""
-      System.put_env "FOO_BAR", ""
-      System.put_env "MISSING", ""
-    end
+
+    on_exit(fn ->
+      System.put_env("APP_TEST_VAR", "")
+      System.put_env("FOO_BAR", "")
+      System.put_env("MISSING", "")
+    end)
   end
 
   test "reloading from a new file" do
@@ -21,7 +22,7 @@ defmodule DotenvAppTest do
   end
 
   test "fetching the whole environment" do
-    env = Dotenv.env
+    env = Dotenv.env()
 
     # no need to expand
     assert Map.get(env.values, "APP_TEST_VAR") == "HELLO"
@@ -46,7 +47,7 @@ defmodule DotenvAppTest do
   test "getting a value with a fallback" do
     assert Dotenv.get("APP_TEST_VAR", :fallback) == "HELLO"
     assert Dotenv.get("MISSING", :fallback) == :fallback
-    assert Dotenv.get("MISSING", fn(_) -> :generated_fallback end) == :generated_fallback
+    assert Dotenv.get("MISSING", fn _ -> :generated_fallback end) == :generated_fallback
   end
 
   test "fetching a var" do
@@ -61,5 +62,4 @@ defmodule DotenvAppTest do
     assert System.get_env("EXPAND_VALUE_6") == "TEST_HELLO_TEST_HELLO"
     assert System.get_env("SKIP_EXPAND_VALUE_REPLACE_1") == "TEST_\\$APP_TEST_VAR"
   end
-
 end
