@@ -16,7 +16,6 @@ defmodule DotenvTest do
     assert Dotenv.Env.get(env, "QUX") == "0000"
   end
 
-  @tag bug: true
   test "parsing a simple dotenv file as found in the real world" do
     File.cd! proj3_dir()
     env = Dotenv.load

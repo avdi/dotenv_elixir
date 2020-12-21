@@ -96,7 +96,7 @@ defmodule Dotenv do
   Retrieves the value of the given `key` from the server, or `fallback` if the
   value is not found.
   """
-  @spec get(String.t, String.t) :: String.t
+  @spec get(String.t, String.t | nil) :: String.t
   def get(key, fallback \\ nil) do
     :gen_server.call :dotenv, {:get, key, fallback}
   end
@@ -118,8 +118,7 @@ defmodule Dotenv do
   @doc """
   Reads the env files at the provided `env_path` path(s) and returns the values in a `Dotenv.Env` struct.
   """
-  @spec load([String.t]) :: Env.t
-  @spec load(String.t) :: Env.t
+  @spec load(String.t | :automatic | [String.t]) :: Env.t
   def load(env_path \\ :automatic)
 
   def load([env_path|env_paths]) do

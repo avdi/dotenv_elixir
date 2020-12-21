@@ -8,13 +8,12 @@ defmodule DotenvElixir.Mixfile do
       deps: deps(),
       package: [
         maintainers: ["Jared Norman"],
-        contributors: ["Avdi Grimm", "David Rouchy", "Jared Norman", "Louis Simoneau"],
+        contributors: ["Avdi Grimm", "David Rouchy", "Jared Norman", "Louis Simoneau", "Michael Bianco"],
         links: %{github: "https://github.com/avdi/dotenv_elixir"},
         licenses: ["MIT"]
       ],
-      description: """
-      A port of dotenv to Elixir
-      """ ]
+      description: "A port of dotenv to Elixir"
+    ]
   end
 
   # Configuration for the OTP application
