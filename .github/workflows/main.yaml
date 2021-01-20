@@ -1,0 +1,24 @@
+on: push
+name: Build
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    strategy:
+      matrix:
+        otp: ['21.3', '22.2', '23.1.1']
+        elixir: ['1.8.2', '1.9.4', '1.10.3', '1.11.1']
+        exclude:
+          - otp: '20.3'
+            elixir: '1.11.1'
+          - otp: '23.1.1'
+            elixir: '1.8.2'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          elixir-version: ${{matrix.elixir}}
+      - run: mix deps.get
+      - run: mix test

@@ -3,7 +3,7 @@ defmodule Dotenv.Server do
   use GenServer
 
   def start_link(env_path) do
-    :gen_server.start_link({:local, :dotenv}, __MODULE__, env_path, [])
+    GenServer.start_link(__MODULE__, env_path, name: :dotenv)
   end
 
   def init(env_path) do
