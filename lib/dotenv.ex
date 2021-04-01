@@ -86,6 +86,18 @@ defmodule Dotenv do
 
   @doc """
   Returns the current state of the server as a `Dotenv.Env` struct.
+  The server will have read the file at the path provided at start.
+
+  ## Examples
+
+      iex> Dotenv.env()
+      %Dotenv.Env{
+        paths: [:automatic],
+        values: %{
+          "FOO" => "sample-value",
+          "BAR" => "123"
+        }
+      }
   """
   @spec env() :: Env.t()
   def env do
@@ -93,12 +105,21 @@ defmodule Dotenv do
   end
 
   @doc """
-  Retrieves the value of the given `key` from the server, or `fallback` if the
+  Retrieves the value of the given `key` from the server state, or `default` if the
   value is not found.
+
+  ## Examples
+
+      iex> Dotenv.get("SOME_VAR_THAT_IS_SET")
+      "some-value"
+      iex> Dotenv.get("DOES_NOT_EXIST")
+      nil
+      iex> Dotenv.get("DOES_NOT_EXIST", 123)
+      123
   """
   @spec get(String.t(), String.t() | nil) :: String.t()
-  def get(key, fallback \\ nil) do
-    :gen_server.call(:dotenv, {:get, key, fallback})
+  def get(key, default \\ nil) do
+    :gen_server.call(:dotenv, {:get, key, default})
   end
 
   ##############################################################################
@@ -108,6 +129,17 @@ defmodule Dotenv do
   @doc """
   Reads the env files at the provided `env_path` path(s), exports the values into
   the system environment, and returns them in a `Dotenv.Env` struct.
+  This will overwrite values in the system environment: subsequent calls to
+  `System.get_env/2` will be affected.
+  If the path is omitted, `:automatic` is assumed.
+
+  ## Examples
+
+      iex> Dotenv.load!("path/to/.env.example")
+      %Dotenv.Env{
+        paths: ["path/to/.env.example"],
+        values: %{"FOO_BAR" => "PROJ2_FOO_BAR", "PROJ2_VAR" => "9876"}
+      }
   """
   def load!(env_path \\ :automatic) do
     env = load(env_path)
@@ -116,7 +148,21 @@ defmodule Dotenv do
   end
 
   @doc """
-  Reads the env files at the provided `env_path` path(s) and returns the values in a `Dotenv.Env` struct.
+  Reads the env file at the provided `env_path` path(s) and returns the values in
+  a single `Dotenv.Env` struct.  A single file or a list of files may be provided.
+  If a path is omitted, `:automatic` discovery is used.
+
+  ## Examples
+
+      iex> Dotenv.load(["path1/.env", "path2/.env"])
+      %Dotenv.Env{
+        paths: ["path1/.env", "path2/.env"],
+        values: %{
+          "A" => "apple",
+          "B" => "beta"
+        }
+      }
+
   """
   @spec load(String.t() | :automatic | [String.t()]) :: Env.t()
   def load(env_path \\ :automatic)
@@ -138,6 +184,29 @@ defmodule Dotenv do
     %Env{paths: [env_path], values: values}
   end
 
+  @doc """
+  This parses the string contents of a file with "dotenv" formatting and returns
+  the values as a map.  Variable values may be referenced after they are declared
+  by using the `${VAR_NAME}` syntax.
+
+  ## Sample Syntax
+
+  Here is a sample `.env` file:
+
+      NAME=Bob
+      GREETING="Hello ${NAME}"
+      DO_NOT_EXPAND="Hello \\${NAME}"
+
+  ## Examples
+
+      iex> contents = File.read!(".env")
+      iex(16)> Dotenv.parse_contents(contents)
+      %{
+        "NAME" => "Bob",
+        "GREETING" => "Hello Bob"
+      }
+  """
+  @spec parse_contents(contents :: String.t()) :: map()
   def parse_contents(contents) do
     values = String.split(contents, "\n")
 
