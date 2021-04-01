@@ -62,8 +62,9 @@ defmodule Dotenv do
           # ... etc ...
       end
 
-  Alternatively, you may with to define a dedicated configuration file for each
-  environment, in which case, you `runtime.exs` might look like this:
+  Alternatively, you may wish to define a dedicated configuration file for each
+  environment (e.g. `.env.test`, etc.), in which case, you `runtime.exs` might
+  look like this:
 
       import Config
       Dotenv.load!(".env.\#{config_env()}")
