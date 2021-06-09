@@ -1,39 +1,61 @@
 defmodule DotenvElixir.Mixfile do
   use Mix.Project
 
+  @source_url "https://github.com/avdi/dotenv_elixir"
+  @version "3.1.0"
+
   def project do
     [
       app: :dotenv,
-      version: "3.1.0",
+      version: @version,
       elixir: "~> 1.0",
       deps: deps(),
-      package: [
-        maintainers: ["Jared Norman"],
-        contributors: [
-          "Avdi Grimm",
-          "David Rouchy",
-          "Jared Norman",
-          "Louis Simoneau",
-          "Michael Bianco"
-        ],
-        links: %{github: "https://github.com/avdi/dotenv_elixir"},
-        licenses: ["MIT"]
-      ],
-      description: "A port of dotenv to Elixir"
+      docs: docs(),
+      package: package()
     ]
   end
 
   # Configuration for the OTP application
   def application do
-    [mod: {Dotenv, [:automatic]}]
+    [
+      mod: {Dotenv, [:automatic]}
+    ]
   end
 
-  # Returns the list of dependencies in the format:
-  # { :foobar, git: "https://github.com/elixir-lang/foobar.git", tag: "0.1" }
-  #
-  # To specify particular versions, regardless of the tag, do:
-  # { :barbat, "~> 0.1", github: "elixir-lang/barbat.git" }
   defp deps do
-    [{:ex_doc, ">= 0.0.0", only: :dev}]
+    [
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+    ]
+  end
+
+  defp docs do
+    [
+      extras: [
+        "LICENSE.md": [title: "License"],
+        "README.md": [title: "Overview"]
+      ],
+      main: "readme",
+      source_url: @source_url,
+      source_ref: "v#{@version}",
+      formatters: ["html"]
+    ]
+  end
+
+  defp package do
+    [
+      description: "A port of dotenv to Elixir",
+      maintainers: ["Jared Norman"],
+      contributors: [
+        "Avdi Grimm",
+        "David Rouchy",
+        "Jared Norman",
+        "Louis Simoneau",
+        "Michael Bianco"
+      ],
+      licenses: ["MIT"],
+      links: %{
+        GitHub: @source_url
+      }
+    ]
   end
 end
