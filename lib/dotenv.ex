@@ -2,8 +2,7 @@ defmodule Dotenv do
   @moduledoc """
   This module implements both an OTP application API and a "serverless" API.
 
-  Server API
-  ==========
+  ## Server API
 
   Start the application with `start/2` On starting, it will automatically export
   the environment variables in the default path (`.env`).
@@ -11,8 +10,7 @@ defmodule Dotenv do
   The environment can then be reloaded with `reload!/0` or a specific path
   or list of paths can be provided to `reload!/1`.
 
-  Serverless API
-  ==============
+  ## Serverless API
 
   To use the serverless API, you can either load the environment variables with
   `load!` (again, optionally passing in a path or list of paths), or you
@@ -116,7 +114,8 @@ defmodule Dotenv do
   end
 
   @doc """
-  Reads the env files at the provided `env_path` path(s) and returns the values in a `Dotenv.Env` struct.
+  Reads the env files at the provided `env_path` path(s) and returns the values
+  in a `Dotenv.Env` struct.
   """
   @spec load(String.t() | :automatic | [String.t()]) :: Env.t()
   def load(env_path \\ :automatic)
